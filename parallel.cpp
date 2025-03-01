@@ -10,11 +10,15 @@ using namespace std;
 
 class graph {
 public:
-    vector<vector<int>> levels;
-    int totalEdge, totalNode;
-    vector<int> edges, degree, NodeIndex, core;
-    int maxDegree, minDegree;
-    
+    vector< vector <int> > levels;
+    int totalEdge;
+    int totalNode;
+    vector<int> edges;
+    vector<int> degree;
+    vector<int> NodeIndex;
+    vector<int> core;
+    int maxDegree;
+    int minDegree;
     void kCore();
     void setGraph(int, int);
     friend void readFile(graph& g, string fileName);
@@ -23,6 +27,7 @@ public:
     void printLevels();
     void printCores();
     void printNodeIndex();
+
 };
 
 //...........................
@@ -63,6 +68,26 @@ void graph::printLevels() {
     }
 }
 
+//...........................
+int findMin(vector<int> items) {
+    int min = items.size();
+    for (int i = 0; i < items.size(); i++) {
+        if (min > items[i] && items[i] != -1) {
+            min = items[i];
+        }
+    }
+    return min;
+}
+//...........................
+int findMax(vector<int> items) {
+    int max = items[0];
+    for (int i = 0; i < items.size(); i++) {
+        if (max < items[i] && items[i] != -1) {
+            max = items[i];
+        }
+    }
+    return max;
+}
 //...........................
 void graph::printNodeIndex() {
     cout << "Index of Nodes:\n";
@@ -121,8 +146,35 @@ void graph::kCore() {
         l++;
     }
 }
-
 //...........................
+void printDegrees(vector<int>ndegree) {
+
+    cout << ", minDegree=" << findMin(ndegree) << endl;
+    cout << "\n__________________________________\n" << "Degrees of Nodes: " << endl;
+    for (int i = 0; i < ndegree.size(); i++)
+        cout << "Degree " << i << " :" << ndegree[i] << "\t";
+    cout << endl;
+    cout << "\n__________________________________\n";
+}
+//............................
+void printGraph(graph g) {
+    cout << endl;
+    int from, to;
+    for (int i = 0;i < g.totalNode;i++) {
+        from = g.edges[i];
+        cout << i << ": ";
+        if (g.degree[i]>0) {
+            for (int j = 0;j < g.degree[i];j++) {
+                cout << g.edges[j+from] << " ";
+            }
+        }
+        cout << endl;
+    }
+    cout << endl;
+    printDegrees(g.degree);
+}
+//...........................
+
 void readFile(graph& g, string fileName) {
     ifstream p(fileName);
     if (!p.is_open()) {
